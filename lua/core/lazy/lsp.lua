@@ -14,6 +14,24 @@ return {
     },
 
     config = function()
+        local ls = require("luasnip")  -- Ensure LuaSnip is required
+
+        ls.add_snippets("c", {
+            ls.snippet("for", {
+                ls.text_node("for (int "),
+                ls.insert_node(1, "i"),
+                ls.text_node(" = 0; "),
+                ls.insert_node(2, "i"),
+                ls.text_node(" < "),
+                ls.insert_node(3, "n"),  -- You can change this to a more fitting placeholder
+                ls.text_node("; "),
+                ls.insert_node(4, "i"),
+                ls.text_node("++) {"),
+                ls.text_node({"", "\t"}), -- Adds a new line and indentation inside the loop
+                ls.insert_node(5),  -- Cursor jumps here for the user to write the loop body
+                ls.text_node({"", "}"})
+            }),
+        })
         local cmp = require('cmp')
         local cmp_lsp = require("cmp_nvim_lsp")
         local capabilities = vim.tbl_deep_extend(
@@ -87,8 +105,8 @@ return {
                 { name = 'nvim_lsp' },
                 { name = 'luasnip' }, -- For luasnip users.
             }, {
-                { name = 'buffer' },
-            })
+                    { name = 'buffer' },
+                })
         })
 
         vim.diagnostic.config({
