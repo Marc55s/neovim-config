@@ -61,7 +61,7 @@ vim.api.nvim_set_keymap("n", "<leader>rr", ":lua CompileAndRunC()<CR>", { norema
 vim.api.nvim_set_keymap("n", "<leader>n", ":!python %<CR>", { noremap = true, silent = true })
 
 -- Run make and execute 
-vim.api.nvim_set_keymap("n", "<leader>m", ":!make<CR>:!./game<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>m", ":wa<CR>:!make<CR>", { noremap = true, silent = true })
 
 --Sync System clipboard with nvim
 vim.schedule(function()
