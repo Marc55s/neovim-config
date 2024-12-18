@@ -1,14 +1,16 @@
+-- lazy.nvim
 return {
-    "goolord/alpha-nvim",
-    -- dependencies = { 'echasnovski/mini.icons' },
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    config = function()
-        local startify = require("alpha.themes.startify")
-        -- available: devicons, mini, default is mini
-        -- if provider not loaded and enabled is true, it will try to use another provider
-        startify.file_icons.provider = "devicons"
-        require("alpha").setup(
-            startify.config
-        )
-    end,
+    "folke/snacks.nvim",
+    ---@type snacks.Config
+    opts = {
+        dashboard = {
+            sections = {
+                { section = "header" },
+                { icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
+                { icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+                { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+                { section = "startup" },
+            },
+        }
+    }
 }
