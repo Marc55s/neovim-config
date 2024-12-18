@@ -25,6 +25,7 @@
   "palenight": { "branch": "master", "commit": "5552a6349bcd927df9f17db34f017b77b963e503" },
   "plenary.nvim": { "branch": "master", "commit": "2d9b06177a975543726ce5c73fca176cedbffe9d" },
   "rose-pine": { "branch": "main", "commit": "07a887a7bef4aacea8c7caebaf8cbf808cdc7a8e" },
+  "smear-cursor.nvim": { "branch": "main", "commit": "05b3beeee9ffa50caf486f00a7bec83292efd594" },
   "snacks.nvim": { "branch": "main", "commit": "41d2c7b6a5d75c2063ee8398c3e0fb5e467e9c46" },
   "telescope.nvim": { "branch": "master", "commit": "a0bbec21143c7bc5f8bb02e0005fa0b982edc026" },
   "themery.nvim": { "branch": "main", "commit": "15c29229e9a25655587462c8c64a62d9aadf0a92" },
