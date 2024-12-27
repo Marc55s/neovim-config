@@ -2,9 +2,9 @@
 return {
     "folke/snacks.nvim",
     ---@type snacks.Config
+    lazy = false,
     opts = {
         dashboard = {
-            enabled = true,
             sections = {
                 { section = "header" },
                 { icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
@@ -13,5 +13,8 @@ return {
                 { section = "startup" },
             },
         },
+    },
+    keys = {
+        { "<leader>lg", function() Snacks.lazygit() end, desc = "Lazygit" },
     },
 }
