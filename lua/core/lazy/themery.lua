@@ -46,36 +46,6 @@ return {
 
             -- Key mapping for switching themes
             vim.api.nvim_set_keymap('n', '<leader>tt', ':Themery<CR>', { noremap = true, silent = true })
-            local function set_transparent()
-
-            -- Enable transparency for Neovim
-            vim.api.nvim_create_autocmd("ColorScheme", {
-            pattern = "*",
-            callback = function()
-            vim.cmd("highlight Normal guibg=NONE ctermbg=NONE")
-            vim.cmd("highlight NonText guibg=NONE")
-            vim.cmd("highlight LineNr guibg=NONE")
-            vim.cmd("highlight Folded guibg=NONE")
-            vim.cmd("highlight EndOfBuffer guibg=NONE")
-            vim.cmd("highlight SignColumn guibg=NONE")
-            vim.cmd("highlight FloatBorder guibg=NONE")
-            vim.cmd("highlight NormalFloat guibg=NONE")
-            end
-            })
-
-            -- Apply transparency immediately when Neovim starts
-            vim.cmd("highlight Normal guibg=NONE ctermbg=NONE")
-            vim.cmd("highlight NonText guibg=NONE")
-            vim.cmd("highlight LineNr guibg=NONE")
-            vim.cmd("highlight Folded guibg=NONE")
-            vim.cmd("highlight EndOfBuffer guibg=NONE")
-            vim.cmd("highlight SignColumn guibg=NONE")
-
-            -- Floating windows transparency
-            vim.cmd("highlight FloatBorder guibg=NONE")
-            vim.cmd("highlight NormalFloat guibg=NONE")
-
-            end
 
 
             -- Automatically change Lualine theme after switching Neovim theme
@@ -84,14 +54,12 @@ return {
             callback = function()
             local current_theme = vim.g.colors_name
             set_lualine_theme(current_theme)
-            set_transparent()
             end
             })
 
             -- Set Lualine theme on startup
             local startup_theme = vim.g.colors_name or "gruvbox"  -- Fallback to "gruvbox" if no theme is set
             set_lualine_theme(startup_theme)
-            set_transparent()
             end
             },
             -- Lualine plugin
