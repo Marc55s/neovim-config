@@ -40,6 +40,12 @@ return {
             vim.lsp.protocol.make_client_capabilities(),
             cmp_lsp.default_capabilities())
 
+        require'lspconfig'.clangd.setup {
+            cmd = { "clangd" , "--compile-commands-dir=./build" }, -- Use the clangd binary provided by NixOS
+            capabilities = require("cmp_nvim_lsp").default_capabilities(),
+            root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
+        }
+
         require("fidget").setup({})
         require("mason").setup()
         require("mason-lspconfig").setup({
@@ -102,7 +108,6 @@ return {
                         },
                     })
                 end,
-
             }
         })
 
