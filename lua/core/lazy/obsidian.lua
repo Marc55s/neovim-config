@@ -24,6 +24,10 @@ return {
             min_chars = 2,
         },
 
+        ui = {
+            enable = true
+        },
+
         daily_notes = {
             -- Optional, if you keep daily notes in a separate directory.
             folder = "daily",
@@ -36,6 +40,31 @@ return {
             -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
             template = nil
         },
+
+        picker = {
+            -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
+            name = "telescope.nvim",
+            -- Optional, configure key mappings for the picker. These are the defaults.
+            -- Not all pickers support all mappings.
+            note_mappings = {
+                -- Create a new note from your query.
+                new = "<C-x>",
+                -- Insert a link to the selected note.
+                insert_link = "<C-l>",
+            },
+            tag_mappings = {
+                -- Add tag(s) to current note.
+                tag_note = "<C-x>",
+                -- Insert a tag at the current location.
+                insert_tag = "<C-l>",
+            },
+        },
+
+        disable_frontmatter = true,  -- Disable metadata frontmatter
+        note_id_func = function(title)
+        -- Use the title as the filename instead of generating an ID
+            return title:gsub(" ", "_"):lower()
+        end,
         mappings = {
             -- Smart action depending on context, either follow link or toggle checkbox.
             ["<cr>"] = {
@@ -55,12 +84,12 @@ return {
                 opts = { noremap = true, silent = true, desc = "Rename current note" },
             },
             -- Open the Obsidian search.
-            ["<leader>os"] = {
+            ["<leader>og"] = {
                 action = ":ObsidianSearch<CR>",
                 opts = { noremap = true, silent = true, desc = "Search notes" },
             },
             -- Quickly switch to another note.
-            ["<leader>oq"] = {
+            ["<leader>of"] = {
                 action = ":ObsidianQuickSwitch<CR>",
                 opts = { noremap = true, silent = true, desc = "Quick switch notes" },
             },

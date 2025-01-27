@@ -5,6 +5,14 @@ require("core.lazy_init")
 
 local autocmd = vim.api.nvim_create_autocmd
 
+
+autocmd("FileType", {
+    pattern = "*",
+    callback = function()
+        vim.opt.conceallevel = 1
+    end,
+})
+
 autocmd('LspAttach', {
     callback = function(e)
         local opts = { buffer = e.buf }
@@ -109,3 +117,61 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.wrap = false
   end,
 })
+
+local actions = require("telescope.actions")
+local action_state = require("telescope.actions.state")
+
+local obsidian_functions = {
+    { name = "Tags", cmd = ":ObsidianTags" },
+    { name = "TOC", cmd = ":ObsidianTOC" },
+    { name = "Extract Note", cmd = ":ObsidianExtractNote" },
+    { name = "Debug", cmd = ":ObsidianDebug" },
+    { name = "Dailies", cmd = ":ObsidianDailies" },
+    { name = "Check", cmd = ":ObsidianCheck" },
+    { name = "Backlinks", cmd = ":ObsidianBacklinks" },
+    { name = "New Note", cmd = ":ObsidianNew" },
+    { name = "Search Notes", cmd = ":ObsidianSearch" },
+    { name = "Quick Switch", cmd = ":ObsidianQuickSwitch" },
+    { name = "Open Today’s Note", cmd = ":ObsidianToday" },
+    { name = "Backlinks", cmd = ":ObsidianBacklinks" },
+    { name = "Open URL", cmd = ":ObsidianOpen" },
+    { name = "Template", cmd = ":ObsidianTemplate" },
+    { name = "New From Template", cmd = ":ObsidianNewFromTemplate" },
+    { name = "Rename", cmd = ":ObsidianRename" },
+    { name = "Links", cmd = ":ObsidianLinks" },
+    { name = "Link", cmd = ":ObsidianLink" },
+    { name = "Follow Link", cmd = ":ObsidianFollowLink" },
+}
+
+function open_obsidian_function()
+    require("telescope.pickers").new({}, {
+        prompt_title = "Obsidian Functions",
+        finder = require("telescope.finders").new_table({
+            results = obsidian_functions,
+            entry_maker = function(entry)
+                return {
+                    value = entry,
+                    display = entry.name,
+                    ordinal = entry.name,
+                }
+            end,
+        }),
+        sorter = require("telescope.config").values.generic_sorter({}),
+        attach_mappings = function(_, map)
+            map("i", "<CR>", function(bufnr)
+                local selection = action_state.get_selected_entry(bufnr)
+                actions.close(bufnr)
+                vim.cmd(selection.value.cmd)
+            end)
+            return true
+        end,
+    }):find()
+end
+
+vim.api.nvim_set_keymap(
+    "n",
+    "<leader>oo",
+    "<cmd>lua open_obsidian_function()<CR>",
+    { noremap = true, silent = true }
+)
+
