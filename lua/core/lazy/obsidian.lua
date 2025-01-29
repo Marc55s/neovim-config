@@ -12,10 +12,6 @@ return {
                 name = "personal",
                 path = "~/vaults/study",
             },
-            {
-                name = "work",
-                path = "~/vaults/private",
-            },
         },
         completion = {
             -- Enable completion with nvim-cmp.

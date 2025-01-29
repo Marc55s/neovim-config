@@ -40,22 +40,26 @@ return {
             vim.lsp.protocol.make_client_capabilities(),
             cmp_lsp.default_capabilities())
 
-        require'lspconfig'.clangd.setup {
-            cmd = { "clangd" , "--compile-commands-dir=./build" }, -- Use the clangd binary provided by NixOS
+        local lspconfig = require("lspconfig")
+        lspconfig.clangd.setup({
+             	cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" },
+             	init_options = {
+             		fallbackFlags = { "-std=c99" },
+             	},
             capabilities = require("cmp_nvim_lsp").default_capabilities(),
             root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
+        })
+        lspconfig.opts = {
+            servers = {
+                clangd = {
+                    mason = false,
+                },
+            },
         }
 
         require("fidget").setup({})
         require("mason").setup()
         require("mason-lspconfig").setup({
-            --[[
-            ensure_installed = {
-                "lua_ls",
-                "rust_analyzer",
-                "clangd",
-            },
-            ]]--
             handlers = {
                 function(server_name) -- default handler (optional)
                     require("lspconfig")[server_name].setup {
