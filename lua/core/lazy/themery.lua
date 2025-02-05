@@ -8,6 +8,7 @@ return {
                 themes = {  -- Define available themes
                     "gruvbox",
                     "rose-pine",
+                    "catppuccin",
                     "lackluster-hack",
                     "lackluster-mint",
                     "kanagawa-wave",
@@ -34,6 +35,7 @@ return {
                     ["kanagawa-dragon"] = "kanagawa",
                     ["kanagawa-lotus"] = "kanagawa",
                     ["palenight"] = "palenight",
+                    ["catppuccin"] = "catppuccin",
                     ["noir"] = "auto",  -- Assuming noir uses the default Lualine theme
                 }
                 local lualine_theme = lualine_theme_map[theme] or "auto"
@@ -69,4 +71,5 @@ return {
             {"slugbyte/lackluster.nvim", name="lackluster"},
             {"rebelot/kanagawa.nvim", name ="kanagawa"},
             {"drewtempelmeyer/palenight.vim", name="palenight"},
+            { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
     }
