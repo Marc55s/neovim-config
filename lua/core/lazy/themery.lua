@@ -1,5 +1,4 @@
 return {
-    -- Themery configuration for theme switching
     {
         "zaldih/themery.nvim",
         config = function()
