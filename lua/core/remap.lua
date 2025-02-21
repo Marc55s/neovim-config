@@ -59,9 +59,6 @@ vim.api.nvim_set_keymap("n", "<leader>n", ":wa<CR>:!python %<CR>", { noremap = t
 -- Run make and execute 
 vim.api.nvim_set_keymap("n", "<leader>m", ":wa<CR>:!make<CR>", { noremap = true, silent = true })
 
--- Run cargo run
-vim.api.nvim_set_keymap("n", "<leader><leader>", ":wa<CR>:!cargo run<CR>", { noremap = true, silent = true })
-
 --Sync System clipboard with nvim
 vim.schedule(function()
     vim.opt.clipboard = "unnamedplus"
