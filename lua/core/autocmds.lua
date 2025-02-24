@@ -19,6 +19,11 @@ local function load_theme()
             -- Try to load the colorscheme safely
             local success = pcall(vim.cmd, "colorscheme " .. theme)
             if success then
+                -- Ensure lualine updates its colors
+                vim.defer_fn(function()
+                    require("lualine").setup(require("lualine").get_config())
+                    vim.cmd("redrawstatus")
+                end, 50) -- Small delay to make sure highlights are applied
                 return vim.trim(theme)
             else
                 vim.notify("Colorscheme not found: " .. theme, vim.log.levels.WARN)

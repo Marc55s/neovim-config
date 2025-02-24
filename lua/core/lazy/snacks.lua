@@ -15,15 +15,15 @@ return {
             },
             preset = {
                 header = {
-                    [[                                                        
-        ████ ██████           █████      ██                     
-       ███████████             █████                             
-       █████████ ███████████████████ ███   ███████████   
-      █████████  ███    █████████████ █████ ██████████████   
-     █████████ ██████████ █████████ █████ █████ ████ █████   
-   ███████████ ███    ███ █████████ █████ █████ ████ █████  
-  ██████  █████████████████████ ████ █████ █████ ████ ██████ 
-                                                                           ]]     
+                    [[                                 
+        ████ ██████           █████      ██
+       ███████████             █████ 
+       █████████ ███████████████████ ███   ███████████
+      █████████  ███    █████████████ █████ ██████████████
+     █████████ ██████████ █████████ █████ █████ ████ █████
+   ███████████ ███    ███ █████████ █████ █████ ████ █████
+  ██████  █████████████████████ ████ █████ █████ ████ ██████
+                                                                           ]]
                 },
             },
         },
@@ -64,7 +64,7 @@ return {
                 max_height = 40,
             },
             convert = {
-                notify = true, -- show a notification on error
+                notify = true,           -- show a notification on error
                 math = {
                     font_size = "Large", -- see https://www.sascha-frank.com/latex-font-size.html
                     -- for latex documents, the doc packages are included automatically,
@@ -79,26 +79,36 @@ return {
                 placement = false,
             },
         },
-        bigfile = {enabled = true},
-        statuscolumn = {enabled = true},
-        lazygit = {enabled = true},
+        bigfile = { enabled = true },
+        statuscolumn = { enabled = true },
+        lazygit = { enabled = true },
         --scroll = {enabled = true},
-        notifier = {enabled = true},
-        picker = {enabled = true},
+        notifier = { enabled = true },
+        picker = { enabled = true,
+            opts = {
+                explorer = {
+                    replace_netrw = true,
+                }
+            }
+        },
+        explorer = {
+            enabled = true,
+        },
 
     },
 
     keys = {
         -- Lazygit
-        { "<leader>lg", function() Snacks.lazygit() end, desc = "Lazygit" },
+        { "<leader>lg",      function() Snacks.lazygit() end,             desc = "Lazygit" },
 
         -- Picker
-        { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
-        { "<leader>ff", function() Snacks.picker.files() end, desc = "Find Files" },
-        { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
-        { "<leader>fg", function() Snacks.picker.grep() end, desc = "Grep" },
-        { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent" },
-        { "<leader>dd", function() Snacks.picker.git_diff() end, desc = "Git Diff (Hunks)" },
-        { "<leader>tz", function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
+        { "<leader><space>", function() Snacks.picker.smart() end,        desc = "Smart Find Files" },
+        { "<leader>ff",      function() Snacks.picker.files() end,        desc = "Find Files" },
+        { "<leader>fb",      function() Snacks.picker.buffers() end,      desc = "Buffers" },
+        { "<leader>fg",      function() Snacks.picker.grep() end,         desc = "Grep" },
+        { "<leader>fr",      function() Snacks.picker.recent() end,       desc = "Recent" },
+        { "<leader>dd",      function() Snacks.picker.git_diff() end,     desc = "Git Diff (Hunks)" },
+        { "<leader>tt",      function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
+        { "<leader>r",       function() Snacks.explorer() end,            desc = "Colorschemes" },
     },
 }
