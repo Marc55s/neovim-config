@@ -15,7 +15,8 @@ return {
             },
             preset = {
                 header = {
-                    [[                                 
+                [[
+                                               
         ████ ██████           █████      ██
        ███████████             █████ 
        █████████ ███████████████████ ███   ███████████
@@ -80,6 +81,7 @@ return {
             },
         },
         bigfile = { enabled = true },
+        words = { enabled = true },
         statuscolumn = { enabled = true },
         lazygit = { enabled = true },
         --scroll = {enabled = true},

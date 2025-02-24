@@ -1,6 +1,6 @@
 return {
     'oxy2dev/markview.nvim',
-    lazy = false,
+    lazy = true,
     ft = { 'markdown' },
     config = function()
         require('markview').setup({

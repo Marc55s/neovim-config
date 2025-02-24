@@ -1,5 +1,6 @@
 return {
     'ThePrimeagen/harpoon',
+    event = "VeryLazy",
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons' },
     config = function()
         require('harpoon').setup({

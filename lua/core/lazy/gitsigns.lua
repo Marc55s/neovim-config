@@ -1,5 +1,6 @@
 return {
     'lewis6991/gitsigns.nvim',
+    event = 'BufRead', -- Load only when opening a file
     config = function()
         require('gitsigns').setup {
             signs = {

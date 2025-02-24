@@ -1,5 +1,6 @@
 return {
 	'nvim-treesitter/nvim-treesitter',
+    event = { 'BufReadPre', 'BufNewFile' }, -- Load only when opening a file
 	build= ':TSUpdate',
     config = function()
         require('nvim-treesitter.configs').setup {

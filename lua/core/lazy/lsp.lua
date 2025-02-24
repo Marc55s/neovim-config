@@ -1,5 +1,7 @@
 return {
     "neovim/nvim-lspconfig",
+    lazy = true, -- Lazy-load the plugin
+    event = { 'BufReadPre', 'BufNewFile' }, -- Load only when opening a file
     dependencies = {
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
@@ -56,7 +58,7 @@ return {
                 },
             },
         },
-        lspconfig.lua_ls.setup {
+        lspconfig.lua_ls.setup ({
             capabilities = capabilities,
             settings = {
                 Lua = {
@@ -66,7 +68,7 @@ return {
                     }
                 }
             }
-        }
+        })
 
         require("fidget").setup({})
         require("mason").setup()
