@@ -3,8 +3,6 @@ return {
     lazy = true, -- Lazy-load the plugin
     event = { 'BufReadPre', 'BufNewFile' }, -- Load only when opening a file
     dependencies = {
-        "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
         "hrsh7th/cmp-nvim-lsp",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
@@ -16,8 +14,9 @@ return {
     },
 
     config = function()
-        local ls = require("luasnip")  -- Ensure LuaSnip is required
 
+        require("fidget").setup({})
+        local ls = require("luasnip")  -- Ensure LuaSnip is required
         ls.add_snippets("c", {
             ls.snippet("for", {
                 ls.text_node("for (int "),
@@ -34,7 +33,7 @@ return {
                 ls.text_node({"", "}"})
             }),
         })
-        local cmp = require('cmp')
+
         local cmp_lsp = require("cmp_nvim_lsp")
         local capabilities = vim.tbl_deep_extend(
             "force",
@@ -44,20 +43,13 @@ return {
 
         local lspconfig = require("lspconfig")
         lspconfig.clangd.setup({
-             	cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" },
-             	init_options = {
-             		fallbackFlags = { "-std=c99" },
-             	},
+            cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" },
+            init_options = {
+                fallbackFlags = { "-std=c99" },
+            },
             capabilities = require("cmp_nvim_lsp").default_capabilities(),
             root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
         })
-        lspconfig.opts = {
-            servers = {
-                clangd = {
-                    mason = false,
-                },
-            },
-        },
         lspconfig.lua_ls.setup ({
             capabilities = capabilities,
             settings = {
@@ -69,65 +61,35 @@ return {
                 }
             }
         })
+        lspconfig.nil_ls.setup {
+            autostart = true,
+            settings = {
+                ['nil'] = {
+                    formatting = {
+                        command = { "nixfmt" },
+                    },
+                },
+            },
+        }
 
-        require("fidget").setup({})
-        require("mason").setup()
-        require("mason-lspconfig").setup({
-            handlers = {
-                function(server_name) -- default handler (optional)
-                    require("lspconfig")[server_name].setup {
-                        capabilities = capabilities
-                    }
-                end,
+        lspconfig.pyright.setup({
+            settings = {
+                python = {
+                    checkOnType = true, -- Enable live type checking
+                    diagnostics = true,  -- Enable diagnostics
+                    inlayHints = true,   -- Enable inlay hints
+                    smartCompletion = true, -- Smarter auto-completion
+                },
+            },
 
-                zls = function()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.zls.setup({
-                        root_dir = lspconfig.util.root_pattern(".git", "build.zig", "zls.json"),
-                        settings = {
-                            zls = {
-                                enable_inlay_hints = true,
-                                enable_snippets = true,
-                                warn_style = true,
-                            },
-                        },
-                    })
-                    vim.g.zig_fmt_parse_errors = 0
-                    vim.g.zig_fmt_autosave = 0
-                end,
-                ["lua_ls"] = function()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.lua_ls.setup {
-                        capabilities = capabilities,
-                        settings = {
-                            Lua = {
-                                runtime = { version = "Lua 5.1" },
-                                diagnostics = {
-                                    globals = { "bit", "vim", "it", "describe", "before_each", "after_each" },
-                                }
-                            }
-                        }
-                    }
-                end,
-                ["rust_analyzer"] = function()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.rust_analyzer.setup({
-                        capabilities = capabilities,
-                        settings = {
-                            ["rust-analyzer"] = {
-                                cargo = {
-                                    allFeatures = true,
-                                },
-                                checkOnSave = {
-                                    command = "clippy",
-                                },
-                            },
-                        },
-                    })
-                end,
-            }
+            capabilities = require("cmp_nvim_lsp").default_capabilities(), -- Add completion support if using nvim-cmp
+            on_attach = function(client, bufnr)
+                -- Disable automatic reference highlighting (if needed)
+                client.server_capabilities.documentHighlightProvider = false
+            end,
         })
 
+        local cmp = require('cmp')
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
         cmp.setup({

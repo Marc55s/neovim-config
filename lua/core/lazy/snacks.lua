@@ -1,6 +1,5 @@
 return {
     "folke/snacks.nvim",
-    ---@type snacks.Config
     lazy = false,
     priority = 1000,
     opts = {
@@ -111,6 +110,8 @@ return {
         { "<leader>fr",      function() Snacks.picker.recent() end,       desc = "Recent" },
         { "<leader>dd",      function() Snacks.picker.git_diff() end,     desc = "Git Diff (Hunks)" },
         { "<leader>tt",      function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
+        { "<leader>sC", function() Snacks.picker.commands() end, desc = "Commands" },
         { "<leader>r",       function() Snacks.explorer() end,            desc = "Colorschemes" },
+
     },
 }
