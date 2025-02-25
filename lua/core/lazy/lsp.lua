@@ -15,6 +15,15 @@ return {
 
     config = function()
 
+        -- Add this at the end of your config function before the last end
+        local function on_attach(client, bufnr)
+            -- Disable document highlighting in normal mode
+            client.server_capabilities.documentHighlightProvider = false
+
+            -- If you also want to disable semantic tokens for all servers
+            client.server_capabilities.semanticTokensProvider = nil
+        end
+
         require("fidget").setup({})
         local ls = require("luasnip")  -- Ensure LuaSnip is required
         ls.add_snippets("c", {
@@ -47,11 +56,14 @@ return {
             init_options = {
                 fallbackFlags = { "-std=c99" },
             },
-            capabilities = require("cmp_nvim_lsp").default_capabilities(),
+            capabilities = {
+                semanticTokensProvider = false
+            },
             root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
         })
         lspconfig.lua_ls.setup ({
             capabilities = capabilities,
+            on_attach = on_attach,
             settings = {
                 Lua = {
                     runtime = { version = "Lua 5.1" },
@@ -63,6 +75,7 @@ return {
         })
         lspconfig.nil_ls.setup {
             autostart = true,
+            on_attach = on_attach,
             settings = {
                 ['nil'] = {
                     formatting = {
@@ -73,22 +86,17 @@ return {
         }
 
         lspconfig.pyright.setup({
+            on_attach = on_attach,
             settings = {
                 python = {
-                    checkOnType = true, -- Enable live type checking
-                    diagnostics = true,  -- Enable diagnostics
-                    inlayHints = true,   -- Enable inlay hints
+                    checkOnType = false, -- Enable live type checking
+                    diagnostics = false,  -- Enable diagnostics
+                    inlayHints = false,   -- Enable inlay hints
                     smartCompletion = true, -- Smarter auto-completion
                 },
             },
-
             capabilities = require("cmp_nvim_lsp").default_capabilities(), -- Add completion support if using nvim-cmp
-            on_attach = function(client, bufnr)
-                -- Disable automatic reference highlighting (if needed)
-                client.server_capabilities.documentHighlightProvider = false
-            end,
         })
-
         local cmp = require('cmp')
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
