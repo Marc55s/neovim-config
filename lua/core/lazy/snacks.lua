@@ -114,4 +114,18 @@ return {
         { "<leader>r",       function() Snacks.explorer() end,            desc = "Colorschemes" },
 
     },
+    init = function()
+        vim.api.nvim_create_autocmd("User", {
+            pattern = "VeryLazy",
+            callback = function()
+                -- Create some toggle mappings
+                Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
+                Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+                Snacks.toggle.diagnostics():map("<leader>ud")
+                Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
+                Snacks.toggle.indent():map("<leader>ug")
+                Snacks.toggle.dim():map("<leader>uD")
+            end,
+        })
+    end,
 }
