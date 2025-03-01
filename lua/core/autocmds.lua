@@ -69,6 +69,8 @@ autocmd("FileType", {
 
 autocmd('LspAttach', {
     callback = function(e)
+        local client = vim.lsp.get_client_by_id(e.data.client_id)
+        client.server_capabilities.semanticTokensProvider = nil
         local opts = { buffer = e.buf }
         vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
         vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)

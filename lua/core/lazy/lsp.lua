@@ -16,7 +16,7 @@ return {
     config = function()
 
         -- Add this at the end of your config function before the last end
-        local function on_attach(client, bufnr)
+        local function on_attach(client, _)
             -- Disable document highlighting in normal mode
             client.server_capabilities.documentHighlightProvider = false
 
@@ -43,6 +43,7 @@ return {
             }),
         })
 
+        local cmp = require('cmp')
         local cmp_lsp = require("cmp_nvim_lsp")
         local capabilities = vim.tbl_deep_extend(
             "force",
@@ -51,15 +52,20 @@ return {
             cmp_lsp.default_capabilities())
 
         local lspconfig = require("lspconfig")
+
         lspconfig.clangd.setup({
             cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" },
             init_options = {
                 fallbackFlags = { "-std=c99" },
             },
-            capabilities = {
-                semanticTokensProvider = false
-            },
+            capabilities = vim.lsp.protocol.make_client_capabilities(),
             root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
+
+            on_attach = function(client, _)
+                if client.server_capabilities.semanticTokensProvider then
+                    client.server_capabilities.semanticTokensProvider = nil
+                end
+            end
         })
         lspconfig.lua_ls.setup ({
             capabilities = capabilities,
@@ -97,7 +103,6 @@ return {
             },
             capabilities = require("cmp_nvim_lsp").default_capabilities(), -- Add completion support if using nvim-cmp
         })
-        local cmp = require('cmp')
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
         cmp.setup({
