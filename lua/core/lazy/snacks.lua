@@ -80,7 +80,7 @@ return {
             },
         },
         bigfile = { enabled = true },
-        words = { enabled = true },
+        words = { enabled = false },
         statuscolumn = { enabled = true },
         lazygit = { enabled = true },
         --scroll = {enabled = true},

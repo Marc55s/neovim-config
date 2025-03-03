@@ -15,14 +15,6 @@ return {
 
     config = function()
 
-        -- Add this at the end of your config function before the last end
-        local function on_attach(client, _)
-            -- Disable document highlighting in normal mode
-            client.server_capabilities.documentHighlightProvider = false
-
-            -- If you also want to disable semantic tokens for all servers
-            client.server_capabilities.semanticTokensProvider = nil
-        end
 
         require("fidget").setup({})
         local ls = require("luasnip")  -- Ensure LuaSnip is required
@@ -60,16 +52,9 @@ return {
             },
             capabilities = vim.lsp.protocol.make_client_capabilities(),
             root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
-
-            on_attach = function(client, _)
-                if client.server_capabilities.semanticTokensProvider then
-                    client.server_capabilities.semanticTokensProvider = nil
-                end
-            end
         })
         lspconfig.lua_ls.setup ({
             capabilities = capabilities,
-            on_attach = on_attach,
             settings = {
                 Lua = {
                     runtime = { version = "Lua 5.1" },
@@ -81,7 +66,6 @@ return {
         })
         lspconfig.nil_ls.setup {
             autostart = true,
-            on_attach = on_attach,
             settings = {
                 ['nil'] = {
                     formatting = {
@@ -92,7 +76,6 @@ return {
         }
 
         lspconfig.pyright.setup({
-            on_attach = on_attach,
             settings = {
                 python = {
                     checkOnType = false, -- Enable live type checking
