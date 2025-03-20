@@ -61,9 +61,9 @@ autocmd("ColorScheme", {
 })
 
 autocmd("FileType", {
-    pattern = "*",
+    pattern = "markdown",
     callback = function()
-        vim.opt.conceallevel = 1
+        vim.opt.conceallevel = 2
     end,
 })
 

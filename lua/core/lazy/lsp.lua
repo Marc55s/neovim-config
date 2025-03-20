@@ -11,6 +11,8 @@ return {
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
         "j-hui/fidget.nvim",
+        "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim",
     },
 
     config = function()
@@ -86,6 +88,17 @@ return {
             },
             capabilities = require("cmp_nvim_lsp").default_capabilities(), -- Add completion support if using nvim-cmp
         })
+
+        require("mason-lspconfig").setup({
+            handlers = {
+                function(server_name) -- default handler (optional)
+                    require("lspconfig")[server_name].setup {
+                        capabilities = capabilities
+                    }
+                end,
+            }
+        })
+
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
         cmp.setup({

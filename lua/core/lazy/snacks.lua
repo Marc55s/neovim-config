@@ -92,9 +92,6 @@ return {
                 }
             }
         },
-        explorer = {
-            enabled = true,
-        },
 
     },
 
@@ -111,7 +108,6 @@ return {
         { "<leader>dd",      function() Snacks.picker.git_diff() end,     desc = "Git Diff (Hunks)" },
         { "<leader>tt",      function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
         { "<leader>sC", function() Snacks.picker.commands() end, desc = "Commands" },
-        { "<leader>r",       function() Snacks.explorer() end,            desc = "Colorschemes" },
 
     },
     init = function()
