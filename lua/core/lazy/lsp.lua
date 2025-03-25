@@ -89,6 +89,22 @@ return {
             capabilities = require("cmp_nvim_lsp").default_capabilities(), -- Add completion support if using nvim-cmp
         })
 
+        lspconfig.texlab.setup({
+            settings = {
+                texlab = {
+                    build = {
+                        executable = "latexmk",
+                        args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "%f" },
+                        onSave = true
+                    },
+                    forwardSearch = {
+                        executable = "zathura",
+                        args = { "--synctex-forward", "%l:1:%f", "%p" }
+                    }
+                }
+            }
+        })
+
         require("mason-lspconfig").setup({
             handlers = {
                 function(server_name) -- default handler (optional)
