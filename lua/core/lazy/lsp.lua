@@ -45,10 +45,14 @@ return {
             vim.lsp.protocol.make_client_capabilities(),
             cmp_lsp.default_capabilities())
 
+        --require("mason").setup()  -- Ensure Mason is set up first
+
+        local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
         local lspconfig = require("lspconfig")
 
         lspconfig.clangd.setup({
-            cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" },
+            cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" , "--fallback-style=file" },
             init_options = {
                 fallbackFlags = { "-std=c99" },
             },
@@ -105,15 +109,23 @@ return {
             }
         })
 
-        require("mason-lspconfig").setup({
-            handlers = {
-                function(server_name) -- default handler (optional)
-                    require("lspconfig")[server_name].setup {
-                        capabilities = capabilities
-                    }
-                end,
-            }
+        lspconfig.rust_analyzer.setup({
+            capabilities = capabilities,
+            settings = {
+                ['rust-analyzer'] = {
+                    cargo = {
+                        allFeatures = true,
+                    },
+                    checkOnSave = {
+                        command = 'clippy',
+                    },
+                    diagnostics = {
+                        enable = true,
+                    },
+                },
+            },
         })
+
 
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
