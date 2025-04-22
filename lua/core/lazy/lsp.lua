@@ -56,7 +56,7 @@ return {
             init_options = {
                 fallbackFlags = { "-std=c99" },
             },
-            capabilities = vim.lsp.protocol.make_client_capabilities(),
+            capabilities = capabilities,
             root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
         })
         lspconfig.lua_ls.setup ({
@@ -150,7 +150,13 @@ return {
         })
 
         vim.diagnostic.config({
-            -- update_in_insert = true,
+            virtual_text = {
+                spacing = 4,
+                prefix = "●", -- Or ">>", ">", "●", etc.
+            },
+            signs = true,
+            underline = true,
+            update_in_insert = false,
             float = {
                 focusable = false,
                 style = "minimal",
