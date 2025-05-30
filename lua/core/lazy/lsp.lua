@@ -1,6 +1,6 @@
 return {
     "neovim/nvim-lspconfig",
-    lazy = true, -- Lazy-load the plugin
+    lazy = true,                            -- Lazy-load the plugin
     event = { 'BufReadPre', 'BufNewFile' }, -- Load only when opening a file
     dependencies = {
         "hrsh7th/cmp-nvim-lsp",
@@ -18,7 +18,7 @@ return {
 
     config = function()
         require("fidget").setup({})
-        local ls = require("luasnip")  -- Ensure LuaSnip is required
+        local ls = require("luasnip") -- Ensure LuaSnip is required
         ls.add_snippets("c", {
             ls.snippet("for", {
                 ls.text_node("for (int "),
@@ -26,13 +26,13 @@ return {
                 ls.text_node(" = 0; "),
                 ls.insert_node(2, "i"),
                 ls.text_node(" < "),
-                ls.insert_node(3, "n"),  -- You can change this to a more fitting placeholder
+                ls.insert_node(3, "n"), -- You can change this to a more fitting placeholder
                 ls.text_node("; "),
                 ls.insert_node(4, "i"),
                 ls.text_node("++) {"),
-                ls.text_node({"", "\t"}), -- Adds a new line and indentation inside the loop
-                ls.insert_node(5),  -- Cursor jumps here for the user to write the loop body
-                ls.text_node({"", "}"})
+                ls.text_node({ "", "\t" }), -- Adds a new line and indentation inside the loop
+                ls.insert_node(5),        -- Cursor jumps here for the user to write the loop body
+                ls.text_node({ "", "}" })
             }),
         })
 
@@ -51,14 +51,21 @@ return {
         local lspconfig = require("lspconfig")
 
         lspconfig.clangd.setup({
-            cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" , "--completion-style=detailed", "--fallback-style=file" },
+            cmd = { "clangd",
+                "--background-index",
+                "--clang-tidy",
+                "--log=verbose",
+                "--completion-style=detailed",
+                "--fallback-style=file",
+                "--all-scopes-completion=false"
+            },
             init_options = {
                 fallbackFlags = { "-std=c99" },
             },
             capabilities = capabilities,
             root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
         })
-        lspconfig.lua_ls.setup ({
+        lspconfig.lua_ls.setup({
             capabilities = capabilities,
             settings = {
                 Lua = {
@@ -83,9 +90,9 @@ return {
         lspconfig.pyright.setup({
             settings = {
                 python = {
-                    checkOnType = false, -- Enable live type checking
-                    diagnostics = false,  -- Enable diagnostics
-                    inlayHints = false,   -- Enable inlay hints
+                    checkOnType = false,    -- Enable live type checking
+                    diagnostics = false,    -- Enable diagnostics
+                    inlayHints = false,     -- Enable inlay hints
                     smartCompletion = true, -- Smarter auto-completion
                 },
             },
@@ -149,25 +156,45 @@ return {
         }
 
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
+        local lspkind = require("lspkind")
 
         cmp.setup({
             snippet = {
                 expand = function(args)
-                    require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+                    require("luasnip").lsp_expand(args.body)
                 end,
             },
             mapping = cmp.mapping.preset.insert({
-                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-                ['<tab>'] = cmp.mapping.select_next_item(cmp_select),
-                ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                ["<C-p>"] = cmp.mapping.select_prev_item(),
+                ["<tab>"] = cmp.mapping.select_next_item(),
+                ["<CR>"] = cmp.mapping.confirm({ select = true }),
                 ["<C-Space>"] = cmp.mapping.complete(),
             }),
             sources = cmp.config.sources({
-                { name = 'nvim_lsp' },
-                { name = 'luasnip' }, -- For luasnip users.
+                { name = "nvim_lsp" },
+                { name = "luasnip" },
             }, {
-                    { name = 'buffer' },
-                })
+                { name = "buffer" },
+            }),
+            formatting = {
+                format = lspkind.cmp_format({
+                    mode = "symbol_text",
+                    maxwidth = 50,
+                    ellipsis_char = "...",
+                    menu = {
+                        buffer = "[buf]",
+                        nvim_lsp = "[LSP]",
+                        luasnip = "[snip]",
+                        path = "[path]",
+                    },
+                    before = function(entry, vim_item)
+                        if entry.completion_item.detail then
+                            vim_item.menu = entry.completion_item.detail
+                        end
+                        return vim_item
+                    end,
+                }),
+            },
         })
 
         vim.diagnostic.config({
