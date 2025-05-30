@@ -52,7 +52,7 @@ return {
         local lspconfig = require("lspconfig")
 
         lspconfig.clangd.setup({
-            cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" , "--fallback-style=file" },
+            cmd = { "clangd", "--background-index", "--clang-tidy", "--log=verbose" , "--completion-style=detailed", "--fallback-style=file" },
             init_options = {
                 fallbackFlags = { "-std=c99" },
             },
