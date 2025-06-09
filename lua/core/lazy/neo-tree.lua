@@ -10,7 +10,10 @@ return {
     lazy = false, -- neo-tree will lazily load itself
     ---@module "neo-tree"
     ---@type neotree.Config?
+    window = {
+        width = 30,
+    },
     opts = {
-        -- fill any relevant options here
+        
     },
 }
