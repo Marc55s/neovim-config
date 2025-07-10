@@ -13,11 +13,10 @@ return {
         "j-hui/fidget.nvim",
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
+        "simrat39/rust-tools.nvim",
     },
 
     config = function()
-
-
         require("fidget").setup({})
         local ls = require("luasnip")  -- Ensure LuaSnip is required
         ls.add_snippets("c", {
@@ -126,6 +125,28 @@ return {
             },
         })
 
+        local rt = require("rust-tools")
+
+        rt.setup({
+          server = {
+            on_attach = function(_, bufnr)
+              -- Hover actions
+              vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+              -- Code action groups
+              vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+            end,
+          },
+        })
+
+        lspconfig.arduino_language_server.setup {
+          cmd = {
+            "arduino-language-server",
+            "-cli-config", "/home/you/.arduino15/arduino-cli.yaml",
+            "-fqbn", "arduino:avr:uno", -- change to your board
+            "-cli", "arduino-cli",
+            "-clangd", "clangd"
+          }
+        }
 
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
 

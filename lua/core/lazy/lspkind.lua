@@ -38,12 +38,14 @@ return {
     local cmp = require("cmp")
     cmp.setup({
       formatting = {
+        fields = {'menu', 'abbr', 'kind'},
         format = require("lspkind").cmp_format({
           with_text = true,  -- Optional: show text with the icon
           menu = {
-            buffer = "[buf]",
-            nvim_lsp = "[LSP]",
-            nvim_lua = "[API]",
+              nvim_lsp = 'λ',
+              vsnip = '⋗',
+              buffer = 'Ω',
+              path = '🖫',
           },
         }),
       },
