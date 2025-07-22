@@ -14,6 +14,10 @@ return {
         width = 30,
     },
     opts = {
-        
+    filesystem = {
+      filtered_items = {
+        visible = true,
+      },
     },
+  },
 }
