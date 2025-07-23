@@ -104,3 +104,29 @@ autocmd("FileType", {
     end,
 })
 
+autocmd("User", {
+    pattern = "VeryLazy",
+    callback = function ()
+      local function get_hl(name)
+        local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name })
+        return ok and hl or {}
+      end
+
+      local bg = get_hl("Normal").bg or "#000000"
+      local bg_alt = get_hl("Visual").bg or "#1e1e2e"
+      local green = get_hl("String").fg or "#a6e3a1"
+      local red = get_hl("Error").fg or "#f38ba8"
+
+      vim.api.nvim_set_hl(0, "SnacksPickerBorder", { fg = bg_alt, bg = bg })
+      vim.api.nvim_set_hl(0, "SnacksPicker", { bg = bg })
+      -- vim.api.nvim_set_hl(0, "SnacksPickerPreviewBorder", { fg = bg, bg = bg })
+      vim.api.nvim_set_hl(0, "SnacksPickerPreview", { bg = bg })
+      vim.api.nvim_set_hl(0, "SnacksPickerPreviewTitle", { fg = bg, bg = green })
+      -- vim.api.nvim_set_hl(0, "SnacksPickerBoxBorder", { fg = bg, bg = bg })
+      -- vim.api.nvim_set_hl(0, "SnacksPickerInputBorder", { fg = bg, bg = bg })
+      vim.api.nvim_set_hl(0, "SnacksPickerInputSearch", { fg = red, bg = bg })
+      vim.api.nvim_set_hl(0, "SnacksPickerListBorder", { fg = bg, bg = bg })
+      vim.api.nvim_set_hl(0, "SnacksPickerList", { bg = bg })
+      vim.api.nvim_set_hl(0, "SnacksPickerListTitle", { fg = bg, bg = bg })
+    end,
+})
