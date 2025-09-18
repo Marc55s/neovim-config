@@ -9,4 +9,5 @@ return {
     { "lunarvim/templeos.nvim",        name = "templeos" },
     { "alexxGmZ/e-ink.nvim",           name = "e-ink",      priority = 1000 },
     { 'datsfilipe/vesper.nvim' },
+    { "ficcdaf/ashen.nvim" },
 }
