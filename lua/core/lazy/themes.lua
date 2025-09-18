@@ -8,4 +8,5 @@ return {
     { "catppuccin/nvim",               name = "catppuccin", priority = 1000 },
     { "lunarvim/templeos.nvim",        name = "templeos" },
     { "alexxGmZ/e-ink.nvim",           name = "e-ink",      priority = 1000 },
+    { 'datsfilipe/vesper.nvim' },
 }
