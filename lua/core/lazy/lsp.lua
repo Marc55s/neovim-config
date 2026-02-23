@@ -1,116 +1,156 @@
 return {
-    "neovim/nvim-lspconfig", -- Still used for server-specific default configs
-    lazy = true,
-    event = { 'BufReadPre', 'BufNewFile' },
+    "neovim/nvim-lspconfig",
+    lazy = true,                            -- Lazy-load the plugin
+    event = { 'BufReadPre', 'BufNewFile' }, -- Load only when opening a file
     dependencies = {
         "hrsh7th/cmp-nvim-lsp",
+        "hrsh7th/cmp-buffer",
+        "hrsh7th/cmp-path",
+        "hrsh7th/cmp-cmdline",
         "hrsh7th/nvim-cmp",
         "L3MON4D3/LuaSnip",
-        "onsails/lspkind.nvim", -- Added since you use it in cmp
+        "saadparwaiz1/cmp_luasnip",
         "j-hui/fidget.nvim",
         "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim",
     },
 
     config = function()
         require("fidget").setup({})
-        local ls = require("luasnip")
-
-        -- 1. SNIPPETS
+        local ls = require("luasnip") -- Ensure LuaSnip is required
         ls.add_snippets("c", {
             ls.snippet("for", {
-                ls.text_node("for (int "), ls.insert_node(1, "i"),
-                ls.text_node(" = 0; "), ls.insert_node(2, "i"),
-                ls.text_node(" < "), ls.insert_node(3, "n"),
-                ls.text_node("; "), ls.insert_node(4, "i"),
+                ls.text_node("for (int "),
+                ls.insert_node(1, "i"),
+                ls.text_node(" = 0; "),
+                ls.insert_node(2, "i"),
+                ls.text_node(" < "),
+                ls.insert_node(3, "n"), -- You can change this to a more fitting placeholder
+                ls.text_node("; "),
+                ls.insert_node(4, "i"),
                 ls.text_node("++) {"),
-                ls.text_node({ "", "\t" }), ls.insert_node(5),
+                ls.text_node({ "", "\t" }), -- Adds a new line and indentation inside the loop
+                ls.insert_node(5),        -- Cursor jumps here for the user to write the loop body
                 ls.text_node({ "", "}" })
             }),
         })
 
-        -- 2. CAPABILITIES
+        local cmp = require('cmp')
+        local cmp_lsp = require("cmp_nvim_lsp")
+        local capabilities = vim.tbl_deep_extend(
+            "force",
+            {},
+            vim.lsp.protocol.make_client_capabilities(),
+            cmp_lsp.default_capabilities())
+
+        --require("mason").setup()  -- Ensure Mason is set up first
+
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-        -- 3. LSP SERVER CONFIGURATION (New Native API)
-        -- We use vim.lsp.config to define settings and vim.lsp.enable to start them.
+        local lspconfig = require("lspconfig")
 
-        -- Clangd
-        vim.lsp.config("clangd", {
-            cmd = { 
-                "clangd", "--background-index", "--clang-tidy", "--log=verbose",
-                "--completion-style=detailed", "--fallback-style=file", "--all-scopes-completion=false"
+        lspconfig.clangd.setup({
+            cmd = { "clangd",
+                "--background-index",
+                "--clang-tidy",
+                "--log=verbose",
+                "--completion-style=detailed",
+                "--fallback-style=file",
+                "--all-scopes-completion=false"
             },
-            init_options = { fallbackFlags = { "-std=c99" } },
+            init_options = {
+                fallbackFlags = { "-std=c99" },
+            },
             capabilities = capabilities,
-            -- NEW: Use root_markers instead of root_pattern
-            root_markers = { "CMakeLists.txt", ".git" },
+            root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
         })
-        vim.lsp.enable("clangd")
-
-        -- Lua
-        vim.lsp.config("lua_ls", {
+        lspconfig.lua_ls.setup({
             capabilities = capabilities,
             settings = {
                 Lua = {
-                    runtime = { version = "LuaJIT" },
+                    runtime = { version = "Lua 5.1" },
                     diagnostics = {
-                        globals = { "vim", "bit", "it", "describe", "before_each", "after_each" },
-                    },
+                        globals = { "bit", "vim", "it", "describe", "before_each", "after_each" },
+                    }
                 }
             }
         })
-        vim.lsp.enable("lua_ls")
-
-        -- Nil (Nix)
-        vim.lsp.config("nil_ls", {
-            capabilities = capabilities,
+        lspconfig.nil_ls.setup {
+            autostart = true,
             settings = {
-                ['nil'] = { formatting = { command = { "nixfmt" } } },
-            },
-        })
-        vim.lsp.enable("nil_ls")
-
-        -- Pyright
-        vim.lsp.config("pyright", {
-            capabilities = capabilities,
-            settings = {
-                python = {
-                    checkOnType = false,
-                    diagnostics = false,
-                    smartCompletion = true,
+                ['nil'] = {
+                    formatting = {
+                        command = { "nixfmt" },
+                    },
                 },
             },
-        })
-        vim.lsp.enable("pyright")
+        }
 
-        -- Rust
-        vim.lsp.config("rust_analyzer", {
+        lspconfig.pyright.setup({
+            settings = {
+                python = {
+                    checkOnType = false,    -- Enable live type checking
+                    diagnostics = false,    -- Enable diagnostics
+                    inlayHints = false,     -- Enable inlay hints
+                    smartCompletion = true, -- Smarter auto-completion
+                },
+            },
+            capabilities = require("cmp_nvim_lsp").default_capabilities(), -- Add completion support if using nvim-cmp
+        })
+
+        lspconfig.texlab.setup({
+            settings = {
+                texlab = {
+                    build = {
+                        executable = "latexmk",
+                        args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "%f" },
+                        onSave = true
+                    },
+                    forwardSearch = {
+                        executable = "zathura",
+                        args = { "--synctex-forward", "%l:1:%f", "%p" }
+                    }
+                }
+            }
+        })
+
+        lspconfig.rust_analyzer.setup({
             capabilities = capabilities,
             settings = {
                 ['rust-analyzer'] = {
-                    cargo = { allFeatures = true },
-                    check = { command = 'clippy' },
+                    cargo = {
+                        allFeatures = true,
+                    },
+                    check= {
+                        command = 'clippy',
+                    },
+                    diagnostics = {
+                        enable = true,
+                    },
                 },
             },
         })
-        vim.lsp.enable("rust_analyzer")
 
-        -- Arduino
-        vim.lsp.config("arduino_language_server", {
-            cmd = {
-                "arduino-language-server",
-                "-cli-config", vim.fn.expand("~/.arduino15/arduino-cli.yaml"),
-                "-fqbn", "arduino:avr:uno",
-                "-cli", "arduino-cli",
-                "-clangd", "clangd"
-            }
-        })
-        vim.lsp.enable("arduino_language_server")
 
-        -- 4. COMPLETION SETUP (nvim-cmp)
-        local cmp = require('cmp')
+        lspconfig.arduino_language_server.setup {
+          cmd = {
+            "arduino-language-server",
+            "-cli-config", "/home/you/.arduino15/arduino-cli.yaml",
+            "-fqbn", "arduino:avr:uno", -- change to your board
+            "-cli", "arduino-cli",
+            "-clangd", "clangd"
+          }
+        }
+
+        local cmp_select = { behavior = cmp.SelectBehavior.Select }
+        local lspkind = require("lspkind")
+
         cmp.setup({
-            snippet = { expand = function(args) ls.lsp_expand(args.body) end },
+            snippet = {
+                expand = function(args)
+                    require("luasnip").lsp_expand(args.body)
+                end,
+            },
             mapping = cmp.mapping.preset.insert({
                 ["<C-p>"] = cmp.mapping.select_prev_item(),
                 ["<tab>"] = cmp.mapping.select_next_item(),
@@ -124,20 +164,42 @@ return {
                 { name = "buffer" },
             }),
             formatting = {
-                format = require("lspkind").cmp_format({
+                format = lspkind.cmp_format({
                     mode = "symbol_text",
                     maxwidth = 50,
-                    menu = { buffer = "[buf]", nvim_lsp = "[LSP]", luasnip = "[snip]" },
+                    ellipsis_char = "...",
+                    menu = {
+                        buffer = "[buf]",
+                        nvim_lsp = "[LSP]",
+                        luasnip = "[snip]",
+                        path = "[path]",
+                    },
+                    before = function(entry, vim_item)
+                        if entry.completion_item.detail then
+                            vim_item.menu = entry.completion_item.detail
+                        end
+                        return vim_item
+                    end,
                 }),
             },
         })
 
-        -- 5. DIAGNOSTICS
         vim.diagnostic.config({
-            virtual_text = { spacing = 4, prefix = "●" },
+            virtual_text = {
+                spacing = 4,
+                prefix = "●", -- Or ">>", ">", "●", etc.
+            },
             signs = true,
             underline = true,
-            float = { border = "rounded", source = "always" },
+            update_in_insert = false,
+            float = {
+                focusable = false,
+                style = "minimal",
+                border = "rounded",
+                source = "always",
+                header = "",
+                prefix = "",
+            },
         })
     end
 }
