@@ -60,6 +60,7 @@ return {
             },
             init_options = {
                 fallbackFlags = { "-std=c99" },
+                useDefaultFallbackStyle = false,
             },
             capabilities = capabilities,
             root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
