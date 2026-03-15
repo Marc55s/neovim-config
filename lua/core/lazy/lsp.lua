@@ -30,7 +30,7 @@ return {
                 ls.insert_node(4, "i"),
                 ls.text_node("++) {"),
                 ls.text_node({ "", "\t" }), -- Adds a new line and indentation inside the loop
-                ls.insert_node(5),        -- Cursor jumps here for the user to write the loop body
+                ls.insert_node(5),          -- Cursor jumps here for the user to write the loop body
                 ls.text_node({ "", "}" })
             }),
         })
@@ -115,32 +115,32 @@ return {
             }
         })
 
-        lspconfig.rust_analyzer.setup({
-            capabilities = capabilities,
-            settings = {
-                ['rust-analyzer'] = {
-                    cargo = {
-                        allFeatures = true,
-                    },
-                    check= {
-                        command = 'clippy',
-                    },
-                    diagnostics = {
-                        enable = true,
-                    },
-                },
-            },
-        })
+        -- lspconfig.rust_analyzer.setup({
+        --     capabilities = capabilities,
+        --     settings = {
+        --         ['rust-analyzer'] = {
+        --             cargo = {
+        --                 allFeatures = true,
+        --             },
+        --             check= {
+        --                 command = 'clippy',
+        --             },
+        --             diagnostics = {
+        --                 enable = true,
+        --             },
+        --         },
+        --     },
+        -- })
 
 
         lspconfig.arduino_language_server.setup {
-          cmd = {
-            "arduino-language-server",
-            "-cli-config", "/home/you/.arduino15/arduino-cli.yaml",
-            "-fqbn", "arduino:avr:uno", -- change to your board
-            "-cli", "arduino-cli",
-            "-clangd", "clangd"
-          }
+            cmd = {
+                "arduino-language-server",
+                "-cli-config", "/home/you/.arduino15/arduino-cli.yaml",
+                "-fqbn", "arduino:avr:uno", -- change to your board
+                "-cli", "arduino-cli",
+                "-clangd", "clangd"
+            }
         }
 
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
@@ -176,7 +176,11 @@ return {
                         path = "[path]",
                     },
                     before = function(entry, vim_item)
-                        if entry.completion_item.detail then
+                        -- rust-analyzer (and some other LSPs) stuff an icon into detail
+                        -- which doubles up with lspkind's own symbol. Clear it for LSP sources.
+                        if entry.source.name == "nvim_lsp" then
+                            vim_item.menu = "[LSP]"
+                        elseif entry.completion_item.detail then
                             vim_item.menu = entry.completion_item.detail
                         end
                         return vim_item
