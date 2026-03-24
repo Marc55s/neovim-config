@@ -141,3 +141,20 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.softtabstop = 4
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "cmake",
+    callback = function()
+        vim.lsp.start({
+            name = 'neocmake',
+            cmd = { 'neocmakelsp', 'stdio' },
+            -- Using getcwd() because we know it worked for you in the manual test
+            root_dir = vim.fn.getcwd(), 
+            init_options = {
+                format = { enable = true },
+                lint = { enable = true },
+                scan_cmake_in_package = true
+            }
+        })
+    end,
+})

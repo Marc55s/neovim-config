@@ -115,6 +115,7 @@ return {
             }
         })
 
+<<<<<<< Updated upstream
         -- lspconfig.rust_analyzer.setup({
         --     capabilities = capabilities,
         --     settings = {
@@ -131,7 +132,18 @@ return {
         --         },
         --     },
         -- })
+=======
+        local util = require('lspconfig.util')
 
+        lspconfig.neocmake.setup({
+            root_dir = util.root_pattern("CMakeLists.txt", ".git", "compile_commands.json"),
+            init_options = {
+                format = { enable = true },
+                lint = { enable = true },
+                scan_cmake_in_package = true
+            }
+        })
+>>>>>>> Stashed changes
 
         lspconfig.arduino_language_server.setup {
             cmd = {

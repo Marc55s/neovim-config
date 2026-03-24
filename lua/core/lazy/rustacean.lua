@@ -1,3 +1,7 @@
+-- rustacean.lua
+-- Full Rust IDE setup using rustaceanvim.
+-- IMPORTANT: Do NOT also call lspconfig.rust_analyzer.setup() anywhere.
+-- rustaceanvim manages the rust-analyzer LSP client entirely on its own.
 return {
     {
         "mrcjkb/rustaceanvim",
