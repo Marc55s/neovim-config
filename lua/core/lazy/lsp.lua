@@ -115,24 +115,6 @@ return {
             }
         })
 
-<<<<<<< Updated upstream
-        -- lspconfig.rust_analyzer.setup({
-        --     capabilities = capabilities,
-        --     settings = {
-        --         ['rust-analyzer'] = {
-        --             cargo = {
-        --                 allFeatures = true,
-        --             },
-        --             check= {
-        --                 command = 'clippy',
-        --             },
-        --             diagnostics = {
-        --                 enable = true,
-        --             },
-        --         },
-        --     },
-        -- })
-=======
         local util = require('lspconfig.util')
 
         lspconfig.neocmake.setup({
@@ -143,7 +125,6 @@ return {
                 scan_cmake_in_package = true
             }
         })
->>>>>>> Stashed changes
 
         lspconfig.arduino_language_server.setup {
             cmd = {
