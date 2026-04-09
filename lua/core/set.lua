@@ -12,6 +12,7 @@ vim.opt.smartindent = true
 vim.opt.wrap = true
 
 
+-- vim.opt.conceallevel = 0
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
 

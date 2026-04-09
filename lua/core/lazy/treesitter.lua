@@ -3,9 +3,9 @@ return {
     event = { 'BufReadPre', 'BufNewFile' }, -- Load only when opening a file
 	build= ':TSUpdate',
     config = function()
-        require('nvim-treesitter.configs').setup {
+        require('nvim-treesitter').setup {
             -- A list of parser names, or "all" (the listed parsers MUST always be installed)
-            -- ensure_installed = {"latex", "rust", "javascript", "typescript", "c", "lua", "vim", "vimdoc", "query"},
+            -- ensure_installed = {"latex", "rust", "javascript", "typescript", "c", "lua", "vim", "vimdoc", "query", "markdown" },
             -- Install parsers synchronously (only applied to `ensure_installed`)
             sync_install = false,
 

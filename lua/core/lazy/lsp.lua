@@ -11,8 +11,7 @@ return {
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
         "j-hui/fidget.nvim",
-        "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
+        "onsails/lspkind.nvim",
     },
 
     config = function()
@@ -35,21 +34,47 @@ return {
             }),
         })
 
-        local cmp = require('cmp')
-        local cmp_lsp = require("cmp_nvim_lsp")
-        local capabilities = vim.tbl_deep_extend(
-            "force",
-            {},
-            vim.lsp.protocol.make_client_capabilities(),
-            cmp_lsp.default_capabilities())
-
-        --require("mason").setup()  -- Ensure Mason is set up first
+        local cmp = require("cmp")
 
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
+        capabilities.textDocument.semanticTokens = {
+            dynamicRegistration = true,
+            overlappingTokenSupport = true,
+            multilineTokenSupport = true,
+        }
 
-        local lspconfig = require("lspconfig")
+        -- 1. Modern UI Overrides (No deprecation warnings)
+        local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+        function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+            opts = opts or {}
+            opts.border = opts.border or "rounded"
 
-        lspconfig.clangd.setup({
+            local bufnr, winid = orig_util_open_floating_preview(contents, syntax, opts, ...)
+
+            -- This is the "Magic" that makes Markdown look fancy
+            if syntax == "markdown" then
+                -- We use schedule to ensure the window is fully initialized
+                -- before applying window-local options
+                vim.schedule(function()
+                    if vim.api.nvim_win_is_valid(winid) then
+                        vim.wo[winid].conceallevel = 2
+                        vim.wo[winid].concealcursor = "nc"
+                        -- This kills the "squared" background look
+                        vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
+                        vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
+                    end
+                end)
+            end
+
+            return bufnr, winid
+        end
+
+        -- 2. Diagnostic config (Keep this for the popups that show errors)
+        vim.diagnostic.config({
+            float = { border = "rounded" },
+        })
+
+        vim.lsp.config["clangd"] = {
             cmd = { "clangd",
                 "--background-index",
                 "--clang-tidy",
@@ -63,9 +88,11 @@ return {
                 useDefaultFallbackStyle = false,
             },
             capabilities = capabilities,
-            root_dir = require("lspconfig.util").root_pattern("CMakeLists.txt", ".git"),
-        })
-        lspconfig.lua_ls.setup({
+            root_markers = { "CMakeLists.txt", ".git", ".clang-format" },
+        }
+        vim.lsp.enable("clangd")
+
+        vim.lsp.config["lua_ls"] = {
             capabilities = capabilities,
             settings = {
                 Lua = {
@@ -75,8 +102,10 @@ return {
                     }
                 }
             }
-        })
-        lspconfig.nil_ls.setup {
+        }
+        vim.lsp.enable("lua_ls")
+
+        vim.lsp.config["nil_ls"] = {
             autostart = true,
             settings = {
                 ['nil'] = {
@@ -86,8 +115,9 @@ return {
                 },
             },
         }
+        vim.lsp.enable("nil_ls")
 
-        lspconfig.pyright.setup({
+        vim.lsp.config["pyright"] = {
             settings = {
                 python = {
                     checkOnType = false,    -- Enable live type checking
@@ -97,9 +127,10 @@ return {
                 },
             },
             capabilities = require("cmp_nvim_lsp").default_capabilities(), -- Add completion support if using nvim-cmp
-        })
+        }
+        vim.lsp.enable("pyright")
 
-        lspconfig.texlab.setup({
+        vim.lsp.config["texlab"] = {
             settings = {
                 texlab = {
                     build = {
@@ -113,20 +144,20 @@ return {
                     }
                 }
             }
-        })
+        }
+        vim.lsp.enable("texlab")
 
-        local util = require('lspconfig.util')
-
-        lspconfig.neocmake.setup({
-            root_dir = util.root_pattern("CMakeLists.txt", ".git", "compile_commands.json"),
+        vim.lsp.config["neocmake"] = {
+            root_markers = { "CMakeLists.txt", ".git", "compile_commands.json" },
             init_options = {
                 format = { enable = true },
                 lint = { enable = true },
                 scan_cmake_in_package = true
             }
-        })
+        }
+        vim.lsp.enable("neocmake")
 
-        lspconfig.arduino_language_server.setup {
+        vim.lsp.config["arduino_language_server"] = {
             cmd = {
                 "arduino-language-server",
                 "-cli-config", "/home/you/.arduino15/arduino-cli.yaml",
@@ -135,8 +166,7 @@ return {
                 "-clangd", "clangd"
             }
         }
-
-        local cmp_select = { behavior = cmp.SelectBehavior.Select }
+        vim.lsp.enable("arduino_language_server")
         local lspkind = require("lspkind")
 
         cmp.setup({
@@ -158,26 +188,18 @@ return {
                 { name = "buffer" },
             }),
             formatting = {
+                fields = { "abbr", "icon", "kind", "menu" },
+                -- fields = { "kind", "abbr", "menu" },
                 format = lspkind.cmp_format({
                     mode = "symbol_text",
-                    maxwidth = 50,
+                    maxwidth = 30,
                     ellipsis_char = "...",
                     menu = {
-                        buffer = "[buf]",
-                        nvim_lsp = "[LSP]",
-                        luasnip = "[snip]",
-                        path = "[path]",
+                        nvim_lsp = 'λ',
+                        luasnip  = '⋗',
+                        buffer   = 'Ω',
+                        path     = '🖫',
                     },
-                    before = function(entry, vim_item)
-                        -- rust-analyzer (and some other LSPs) stuff an icon into detail
-                        -- which doubles up with lspkind's own symbol. Clear it for LSP sources.
-                        if entry.source.name == "nvim_lsp" then
-                            vim_item.menu = "[LSP]"
-                        elseif entry.completion_item.detail then
-                            vim_item.menu = entry.completion_item.detail
-                        end
-                        return vim_item
-                    end,
                 }),
             },
         })

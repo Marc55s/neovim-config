@@ -69,14 +69,10 @@ autocmd("FileType", {
 
 autocmd('LspAttach', {
     callback = function(e)
-        local client = vim.lsp.get_client_by_id(e.data.client_id)
-        client.server_capabilities.semanticTokensProvider = nil
         local opts = { buffer = e.buf }
         vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
         vim.keymap.set("n", "K", function()
-            vim.lsp.buf.hover({
-                border = "rounded",
-            })
+            vim.lsp.buf.hover()
         end, opts)
         vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
         vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
@@ -106,40 +102,40 @@ autocmd("FileType", {
 
 autocmd("User", {
     pattern = "VeryLazy",
-    callback = function ()
-      local function get_hl(name)
-        local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name })
-        return ok and hl or {}
-      end
+    callback = function()
+        local function get_hl(name)
+            local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name })
+            return ok and hl or {}
+        end
 
-      local bg = get_hl("Normal").bg or "#000000"
-      local bg_alt = get_hl("Visual").bg or "#1e1e2e"
-      local green = get_hl("String").fg or "#a6e3a1"
-      local red = get_hl("Error").fg or "#f38ba8"
+        local bg = get_hl("Normal").bg or "#000000"
+        local bg_alt = get_hl("Visual").bg or "#1e1e2e"
+        local green = get_hl("String").fg or "#a6e3a1"
+        local red = get_hl("Error").fg or "#f38ba8"
 
-      vim.api.nvim_set_hl(0, "SnacksPickerBorder", { fg = bg_alt, bg = bg })
-      vim.api.nvim_set_hl(0, "SnacksPicker", { bg = bg })
-      -- vim.api.nvim_set_hl(0, "SnacksPickerPreviewBorder", { fg = bg, bg = bg })
-      vim.api.nvim_set_hl(0, "SnacksPickerPreview", { bg = bg })
-      vim.api.nvim_set_hl(0, "SnacksPickerPreviewTitle", { fg = bg, bg = green })
-      -- vim.api.nvim_set_hl(0, "SnacksPickerBoxBorder", { fg = bg, bg = bg })
-      -- vim.api.nvim_set_hl(0, "SnacksPickerInputBorder", { fg = bg, bg = bg })
-      vim.api.nvim_set_hl(0, "SnacksPickerInputSearch", { fg = red, bg = bg })
-      vim.api.nvim_set_hl(0, "SnacksPickerListBorder", { fg = bg, bg = bg })
-      vim.api.nvim_set_hl(0, "SnacksPickerList", { bg = bg })
-      vim.api.nvim_set_hl(0, "SnacksPickerListTitle", { fg = bg, bg = bg })
+        vim.api.nvim_set_hl(0, "SnacksPickerBorder", { fg = bg_alt, bg = bg })
+        vim.api.nvim_set_hl(0, "SnacksPicker", { bg = bg })
+        -- vim.api.nvim_set_hl(0, "SnacksPickerPreviewBorder", { fg = bg, bg = bg })
+        vim.api.nvim_set_hl(0, "SnacksPickerPreview", { bg = bg })
+        vim.api.nvim_set_hl(0, "SnacksPickerPreviewTitle", { fg = bg, bg = green })
+        -- vim.api.nvim_set_hl(0, "SnacksPickerBoxBorder", { fg = bg, bg = bg })
+        -- vim.api.nvim_set_hl(0, "SnacksPickerInputBorder", { fg = bg, bg = bg })
+        vim.api.nvim_set_hl(0, "SnacksPickerInputSearch", { fg = red, bg = bg })
+        vim.api.nvim_set_hl(0, "SnacksPickerListBorder", { fg = bg, bg = bg })
+        vim.api.nvim_set_hl(0, "SnacksPickerList", { bg = bg })
+        vim.api.nvim_set_hl(0, "SnacksPickerListTitle", { fg = bg, bg = bg })
     end,
 })
 
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "cpp", "h" },
-  callback = function()
-    vim.opt_local.expandtab = false
-    vim.opt_local.shiftwidth = 4
-    vim.opt_local.tabstop = 4
-    vim.opt_local.softtabstop = 4
-  end,
+    pattern = { "c", "cpp", "h" },
+    callback = function()
+        vim.opt_local.expandtab = false
+        vim.opt_local.shiftwidth = 4
+        vim.opt_local.tabstop = 4
+        vim.opt_local.softtabstop = 4
+    end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -149,7 +145,7 @@ vim.api.nvim_create_autocmd("FileType", {
             name = 'neocmake',
             cmd = { 'neocmakelsp', 'stdio' },
             -- Using getcwd() because we know it worked for you in the manual test
-            root_dir = vim.fn.getcwd(), 
+            root_dir = vim.fn.getcwd(),
             init_options = {
                 format = { enable = true },
                 lint = { enable = true },
