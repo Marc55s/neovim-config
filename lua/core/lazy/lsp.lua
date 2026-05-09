@@ -74,6 +74,47 @@ return {
             float = { border = "rounded" },
         })
 
+        vim.lsp.config["ts_ls"] = {
+            cmd = { "typescript-language-server", "--stdio" },
+            filetypes = { "javascript", "typescript", "vue" },
+            init_options = {
+                plugins = {
+                    {
+                        name = "@vue/typescript-plugin",
+                        -- Löst den Pfad im schreibgeschützten Nix-Store auf
+                        location = vim.fn.exepath("vue-language-server"):gsub(
+                            "/bin/vue-language-server$",
+                            "/lib/node_modules/@vue/language-server"
+                        ),
+                        languages = { "vue" },
+                    },
+                },
+            },
+        }
+        -- 3. Setup Tailwind CSS
+        vim.lsp.config["tailwindcss"] = {
+            cmd = { "tailwindcss-language-server", "--stdio" },
+
+            filetypes = { "html", "css", "vue", "javascript", "typescript" },
+
+            root_markers = { "package.json", ".git" },
+        }
+
+        vim.lsp.config["volar"] = {
+            cmd = { "vue-language-server", "--stdio" },
+            root_markers = { "package.json", "tsconfig.json", ".git" },
+            init_options = {
+                vue = {
+                    hybridMode = true,
+                },
+            },
+        }
+
+        vim.lsp.enable("ts_ls")
+        vim.lsp.enable("tailwindcss")
+        vim.lsp.enable("volar")
+
+
         vim.lsp.config["clangd"] = {
             cmd = { "clangd",
                 "--background-index",

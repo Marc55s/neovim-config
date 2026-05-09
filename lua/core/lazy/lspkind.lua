@@ -33,6 +33,6 @@ return {
                 Operator = "󰆕",
                 TypeParameter = "󰊄",
             },
-        })(entry, item)
+        })--(entry, item)
     end,
 }
