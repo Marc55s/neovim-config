@@ -38,6 +38,7 @@ local autocmd = vim.api.nvim_create_autocmd
 
 -- Load Theme on VimEnter
 autocmd("VimEnter", {
+    nested = true, -- let :colorscheme fire ColorScheme autocmds at startup
     callback = function()
         local last_theme = load_theme()
         if last_theme then
