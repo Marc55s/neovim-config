@@ -121,7 +121,10 @@ return {
                 "--clang-tidy",
                 "--log=verbose",
                 "--completion-style=detailed",
-                "--fallback-style=file",
+                -- NOTE: clangd's --fallback-style only accepts NAMED styles (not inline
+                -- "{...}" config). 4-space indent comes from ~/.clang-format instead,
+                -- which clangd picks up automatically for any project under $HOME.
+                "--fallback-style=LLVM",
                 "--all-scopes-completion=false"
             },
             init_options = {
@@ -208,6 +211,21 @@ return {
             }
         }
         vim.lsp.enable("arduino_language_server")
+
+        vim.lsp.config["hls"] = {
+            cmd = { "haskell-language-server-wrapper", "--lsp" },
+            filetypes = { "haskell", "lhaskell" },
+            root_markers = { "hie.yaml", "stack.yaml", "cabal.project", "package.yaml", ".git" },
+            capabilities = capabilities,
+            settings = {
+                haskell = {
+                    formattingProvider = "ormolu",
+                    checkProject = true,
+                },
+            },
+        }
+        vim.lsp.enable("hls")
+
         local lspkind = require("lspkind")
 
         cmp.setup({
