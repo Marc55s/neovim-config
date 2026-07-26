@@ -10,5 +10,5 @@ return {
     { "alexxGmZ/e-ink.nvim",           name = "e-ink",      priority = 1000 },
     { 'datsfilipe/vesper.nvim' },
     { "ficcdaf/ashen.nvim" },
-    { 'g-kirti/hardhat.nvim' }
+    { "g-kirti/hardhat.nvim", lazy = false, priority = 1000}
 }

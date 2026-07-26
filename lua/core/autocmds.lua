@@ -1,12 +1,9 @@
 local function save_theme(theme)
-    local path = vim.fn.stdpath("data") .. "/last_theme.txt"
-    local file = io.open(path, "w")
-    if file then
-        file:write(theme)
-        file:close()
-    else
-        vim.notify("Error saving theme", vim.log.levels.ERROR)
-    end
+    if not theme or theme == "" then return end
+    if not vim.tbl_contains(vim.fn.getcompletion("", "color"), theme) then return end
+    local ok = pcall(vim.fn.writefile, { theme },
+        vim.fn.stdpath("data") .. "/last_theme.txt")
+    if not ok then vim.notify("Error saving theme", vim.log.levels.ERROR) end
 end
 
 local function load_theme()
@@ -52,12 +49,13 @@ autocmd("VimEnter", {
 -- Save Theme on Change
 autocmd("ColorScheme", {
     pattern = "*",
-    callback = function()
-        local theme = vim.g.colors_name
-        if theme then
-            save_theme(theme)
-            require('lualine').refresh()
+    callback = function(ev)
+        -- ev.match is the name passed to :colorscheme, always reloadable
+        if vim.g.colors_name ~= ev.match then
+            vim.g.colors_name = ev.match  -- patch themes that forget
         end
+        save_theme(ev.match)
+        require("lualine").refresh()
     end,
 })
 
