@@ -51,8 +51,14 @@ vim.api.nvim_set_keymap('n', '<C-Down>', ':resize +2<CR>', { noremap = true, sil
 vim.api.nvim_set_keymap('n', '<C-Left>', ':vertical resize -2<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<C-Right>', ':vertical resize +2<CR>', { noremap = true, silent = true })
 
--- Keymap for running C code with Zig using Space + r
-vim.api.nvim_set_keymap("n", "<leader>rr", ":lua CompileAndRunC()<CR>", { noremap = true, silent = true })
+-- Quit termina with ESC
+vim.keymap.set("t", "<C-Space>", [[<C-\><C-n><cmd>bd!<CR>]])
+
+-- <leader>t opens a small terminal at the bottom
+vim.keymap.set("n", "<leader>r", function()
+  vim.cmd("botright 12split | terminal")
+  vim.cmd("startinsert")
+end)
 
 -- Run python script
 vim.api.nvim_set_keymap("n", "<leader>n", ":wa<CR>:!python %<CR>", { noremap = true, silent = true })
