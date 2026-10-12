@@ -18,7 +18,8 @@ return {
             'json', 'yaml', 'toml',
             'markdown', 'markdown_inline',
             'bash',
-            'haskell'
+            'haskell',
+            'nix'
         }
         require('nvim-treesitter').install(ensure)
 
